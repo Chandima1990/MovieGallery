@@ -15,7 +15,7 @@
   </ion-refresher>
 
   <ion-searchbar placeholder="Search Movie..." enterkeyhint="Search" showClearButton="always" (ionClear)="queryClear()"
-    [debounce]="1000" (ionChange)="queryChanged($event)">
+    [debounce]="300" (ionChange)="queryChanged($event)">
 
     <ion-spinner *ngIf="searchLoading"></ion-spinner>
   </ion-searchbar>
