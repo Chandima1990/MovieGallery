@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-title>Movie Details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backRoute"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content>
+      <ion-label pullingIcon="chevron-down-circle-outline" pullingText="Pull to refresh" refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-label>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Released on {{ movie.release_date | date: 'mediumDate' }}
+
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{ movie.title }}
+      </ion-card-title>
+
+      <ion-card-subtitle *ngIf="originalTitle">
+        {{' (' + originalTitle + ')'}}
+      </ion-card-subtitle>
+
+      <ion-label>{{genres}}</ion-label>
+    </ion-card-header>
+    <ion-card-content>
+      <img [src]="baseImagesUrl+'/w400/'+movie.poster_path" alt="">
+      <ion-label>Summary</ion-label>
+      <p>{{ movie.overview }}</p>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-item>
+    <ion-icon size="small" name="star" slot="start"></ion-icon>
+    <ion-label>
+      <h3>
+        TMDB Rating
+      </h3>
+      <p>
+        {{movie.vote_average | number :'1.1-1'}}
+      </p>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon size="small" name="checkmark" slot="start"></ion-icon>
+    <ion-label>
+      <h3>
+        Votes
+      </h3>
+      <p>
+        {{movie.vote_count}}
+      </p>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon size="small" name="language-outline" slot="start"></ion-icon>
+    <ion-label>
+      <h3>
+        Spoken Languages
+      </h3>
+      <p class="content-wrap">
+        {{languages}}
+      </p>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon size="small" slot="start" name="arrow-redo-outline"></ion-icon>
+    <ion-label>
+      <h3>More from</h3>
+      <img (click)="openIMDBPage()" width="100px" src="assets/img/imdb.png" height="50px"
+        src="https://ia.media-imdb.com/images/M/MV5BMTk3ODA4Mjc0NF5BMl5BcG5nXkFtZTgwNDc1MzQ2OTE@._V1_.png" alt="">
+    </ion-label>
+  </ion-item>
+
+
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="openHomePage()">
+    Go to Homepage
+  </ion-button>
+</ion-footer>

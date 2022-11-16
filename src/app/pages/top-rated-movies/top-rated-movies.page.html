@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>Top Rated Movies</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh()">
+    <ion-refresher-content>
+      <ion-label pullingIcon="chevron-down-circle-outline" pullingText="Pull to refresh" refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-label>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-searchbar placeholder="Search Movie..." enterkeyhint="Search" showClearButton="always" (ionClear)="queryClear()"
+    [debounce]="1000" (ionChange)="queryChanged($event)">
+
+    <ion-spinner *ngIf="searchLoading"></ion-spinner>
+  </ion-searchbar>
+
+  <ion-list inset="true" *ngIf="searchedMoviesArray.length !== 0">
+    <ion-item button *ngFor="let result of searchedMoviesArray" [routerLink]="[result.id]">
+      <ion-avatar slot="start">
+        <img [src]="baseImagesUrl+ '/w92' + result.poster_path" alt="">
+      </ion-avatar>
+      <ion-label>{{ result.title }}</ion-label>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list>
+    <ion-item button *ngFor="let movie of moviesArray" [routerLink]="[movie.id]">
+      <ion-avatar slot="start">
+        <img [src]="baseImagesUrl+ '/w92' + movie.poster_path" alt="">
+      </ion-avatar>
+      <ion-label>
+        <h2 class="content-wrap">{{movie.title}}</h2>
+        <p>Released on {{movie.release_date | date: 'y MMM'}}</p>
+      </ion-label>
+      <ion-badge slot="end">
+        <ion-icon name="star"></ion-icon>
+        {{movie.vote_average}}
+      </ion-badge>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
