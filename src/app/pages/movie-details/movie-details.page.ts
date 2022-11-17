@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { Movie } from 'src/app/models';
@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
   selector: 'app-movie-details',
   templateUrl: './movie-details.page.html',
   styleUrls: ['./movie-details.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class MovieDetailsPage implements OnInit {
   movie: Movie.MovieDetailModel = {} as Movie.MovieDetailModel;

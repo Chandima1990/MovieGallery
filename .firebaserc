@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "movie-gallery-58ff2": {
+      "hosting": {
+        "app": [
+          "movie-gallery-58ff2"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "movie-gallery-58ff2"
+  }
+}

@@ -1,29 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { InfiniteScrollCustomEvent, LoadingController } from '@ionic/angular';
-import { Movie } from 'src/app/models';
-import { MovieService } from 'src/app/services/movie.service';
-import { environment } from 'src/environments/environment';
+import { Movie, MovieListBaseComponent } from 'src/app/models';
+import { MovieService } from 'src/app/services/';
 
 @Component({
   selector: 'app-top-rated-movies',
   templateUrl: './top-rated-movies.page.html',
   styleUrls: ['./top-rated-movies.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class TopRatedMoviesPage implements OnInit {
-  movieSet: Set<Movie.PopularMovie> = new Set<Movie.PopularMovie>();
-  searchedMovieSet: Set<Movie.SearchedMovieModel> = new Set<Movie.SearchedMovieModel>();
-  currentPage = 1;
-  baseImagesUrl = environment.images;
-  searchLoading = false;
-  constructor(private service: MovieService,
-    private loadingCtrl: LoadingController) { }
+export class TopRatedMoviesPage
+extends MovieListBaseComponent<Movie.TopRatedMovie>
+implements OnInit {
+  constructor(protected override service: MovieService,
+    protected loadingCtrl: LoadingController) {
+    super(service);
+  }
 
   ngOnInit() {
     this.loadMovies();
-  }
-
-  handleRefresh() {
-    window.location.reload();
   }
 
   /**
@@ -42,50 +37,15 @@ export class TopRatedMoviesPage implements OnInit {
       await loading.present();
     }
 
-    this.service.getTopRatedMovies(this.currentPage, query).subscribe(movies => {
+    this.service.getTopRatedMovies(this.lastPage, query).subscribe(movies => {
       movies.results.forEach(movie => this.movieSet.add(movie));
       loading.dismiss();
 
       if (event) {
-        // event.target.disabled = movies.total_pages === this.currentPage;
+        event.target.disabled = movies.total_pages === this.lastPage;
       }
 
       event?.target.complete();
     });
   }
-
-  /**
-   * This method is called when the user scrolls to the bottom of the page.
-   * It will load the next page
-   */
-  loadMoreMovies(event: any) {
-    this.currentPage++;
-    this.loadMovies(event);
-  }
-
-  get moviesArray(): Movie.PopularMovie[] {
-    return Array.from(this.movieSet);
-  }
-
-  queryChanged(event: any) {
-    if (event.detail.value) {
-      this.searchLoading = true;
-      this.service.searchMovies(event.detail.value).subscribe(movies => {
-        this.searchedMovieSet = new Set<Movie.SearchedMovieModel>(movies.results);
-        this.searchLoading = false;
-      });
-    } else {
-      this.queryClear();
-    }
-  }
-
-  get searchedMoviesArray(): Movie.SearchedMovieModel[] {
-    return Array.from(this.searchedMovieSet);
-  }
-
-  queryClear() {
-    this.searchLoading = false;
-    this.searchedMovieSet.clear();
-  }
-
 }

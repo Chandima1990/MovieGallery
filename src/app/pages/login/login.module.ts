@@ -4,21 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MoviesPageRoutingModule } from './movies-routing.module';
+import { LoginPageRoutingModule } from './login-routing.module';
 
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { MoviesPage } from './movies.page';
+import { LoginPage } from './login.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-
-    ScrollingModule,
     IonicModule,
-    MoviesPageRoutingModule
+    LoginPageRoutingModule
   ],
-  declarations: [MoviesPage]
+  declarations: [LoginPage]
 })
-export class MoviesPageModule {}
+export class LoginPageModule {}

@@ -1,10 +1,4 @@
-<ion-header>
-  <ion-toolbar color="danger">
-    <ion-title>Top Rated Movies</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
+<ion-content scrollY="false">
 
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh()">
     <ion-refresher-content>
@@ -30,8 +24,9 @@
 
   </ion-list>
 
+  <cdk-virtual-scroll-viewport itemSize="5" class="ion-content-scroll-host">
   <ion-list>
-    <ion-item button *ngFor="let movie of moviesArray" [routerLink]="[movie.id]">
+    <ion-item button *cdkVirtualFor="let movie of moviesArray" [routerLink]="[movie.id]">
       <ion-avatar slot="start">
         <img [src]="baseImagesUrl+ '/w92' + movie.poster_path" alt="">
       </ion-avatar>
@@ -50,4 +45,6 @@
     <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
+</cdk-virtual-scroll-viewport>
+
 </ion-content>

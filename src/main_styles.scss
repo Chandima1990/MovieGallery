@@ -1,3 +1,8 @@
 .content-wrap {
   white-space: pre-wrap;
 }
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+}

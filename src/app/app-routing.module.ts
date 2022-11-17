@@ -2,6 +2,13 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './pages/tabs/tabs.page';
 
+import {
+  canActivate,
+  redirectUnauthorizedTo
+} from '@angular/fire/auth-guard';
+
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+
 const routes: Routes = [
 
   {
@@ -12,25 +19,19 @@ const routes: Routes = [
         path: '',
         loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)
       }
-    ]
+    ],
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: '',
     redirectTo: 'tabs',
     pathMatch: 'full'
   },
-  {
-    path: 'top-rated-movies',
-    loadChildren: () => import('./pages/top-rated-movies/top-rated-movies.module').then( m => m.TopRatedMoviesPageModule)
-  },
-  {
-    path: 'favorite',
-    loadChildren: () => import('./pages/favorite/favorite.module').then( m => m.FavoritePageModule)
-  },
-  {
-    path: 'about',
-    loadChildren: () => import('./pages/about/about.module').then( m => m.AboutPageModule)
-  }
+
 ];
 
 @NgModule({

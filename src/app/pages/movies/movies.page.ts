@@ -1,36 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { InfiniteScrollCustomEvent } from '@ionic/core';
-import { Movie } from 'src/app/models';
-import { MovieService } from 'src/app/services/movie.service';
-import { environment } from 'src/environments/environment';
+import { Movie, MovieListBaseComponent } from 'src/app/models';
+import { MovieService } from 'src/app/services/';
 
 @Component({
   selector: 'app-movies',
   templateUrl: './movies.page.html',
   styleUrls: ['./movies.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class MoviesPage implements OnInit {
-  movieSet: Set<Movie.PopularMovie> = new Set<Movie.PopularMovie>();
-  searchedMovieSet: Set<Movie.SearchedMovieModel> = new Set<Movie.SearchedMovieModel>();
-  currentPage = 1;
-  baseImagesUrl = environment.images;
-  searchLoading = false;
-  constructor(private service: MovieService,
-    private loadingCtrl: LoadingController) { }
+export class MoviesPage
+extends MovieListBaseComponent<Movie.PopularMovie>
+implements OnInit {
+  constructor(protected override service: MovieService,
+    private loadingCtrl: LoadingController) {
+    super(service);
+  }
 
   ngOnInit() {
     this.loadMovies();
   }
 
-  handleRefresh() {
-    window.location.reload();
-  }
-
-  /**
-   *  Load movies from the API
-   * @param event scroll event if relevant
-   */
   async loadMovies(event?: InfiniteScrollCustomEvent, query?: string) {
     const loading = await this.loadingCtrl.create({
       message: 'Loading...',
@@ -43,50 +34,17 @@ export class MoviesPage implements OnInit {
       await loading.present();
     }
 
-    this.service.getPopularMovies(this.currentPage, query).subscribe(movies => {
+    this.service.getPopularMovies(this.lastPage, query).subscribe(movies => {
       movies.results.forEach(movie => this.movieSet.add(movie));
       loading.dismiss();
 
       if (event) {
-        // event.target.disabled = movies.total_pages === this.currentPage;
+        event.target.disabled = movies.total_pages === this.lastPage;
       }
 
       event?.target.complete();
     });
   }
 
-  /**
-   * This method is called when the user scrolls to the bottom of the page.
-   * It will load the next page
-   */
-  loadMoreMovies(event: any) {
-    this.currentPage++;
-    this.loadMovies(event);
-  }
-
-  get moviesArray(): Movie.PopularMovie[] {
-    return Array.from(this.movieSet);
-  }
-
-  queryChanged(event: any) {
-    if (event.detail.value) {
-      this.searchLoading = true;
-      this.service.searchMovies(event.detail.value).subscribe(movies => {
-        this.searchedMovieSet = new Set<Movie.SearchedMovieModel>(movies.results);
-        this.searchLoading = false;
-      });
-    } else {
-      this.queryClear();
-    }
-  }
-
-  get searchedMoviesArray(): Movie.SearchedMovieModel[] {
-    return Array.from(this.searchedMovieSet);
-  }
-
-  queryClear() {
-    this.searchLoading = false;
-    this.searchedMovieSet.clear();
-  }
 
 }
